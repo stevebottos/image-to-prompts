@@ -1,5 +1,0 @@
-salesforce-lavis
-sentence-transformers
-torch
-torchvision
-tqdm
