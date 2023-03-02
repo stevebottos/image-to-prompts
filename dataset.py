@@ -64,7 +64,14 @@ class ImagePromptDataset(Dataset):
         return image, prompt
 
 
-def get_datasets(train_files, val_files, train_limit=None, val_limit=None):
+def get_datasets(
+    train_files,
+    val_files,
+    test_files,
+    train_limit=None,
+    val_limit=None,
+    test_limit=None,
+):
     train_dataset = ImagePromptDataset(
         datadir=Config.datadir,
         datafiles=train_files,
@@ -93,7 +100,21 @@ def get_datasets(train_files, val_files, train_limit=None, val_limit=None):
         num_workers=4,
     )
 
-    return train_dataloader, val_dataloader
+    test_dataset = ImagePromptDataset(
+        datadir=Config.datadir,
+        datafiles=test_files,
+        imsize=Config.image_size,
+        limit=test_limit,
+    )
+
+    test_dataloader = DataLoader(
+        test_dataset,
+        batch_size=2,
+        shuffle=False,
+        num_workers=4,
+    )
+
+    return train_dataloader, val_dataloader, test_dataloader
 
 
 if __name__ == "__main__":
