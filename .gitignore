@@ -2,6 +2,8 @@
 .BLIP/
 sentence_embeddings/
 check/
+scratch.py
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

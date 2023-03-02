@@ -1,6 +1,6 @@
 class Config:
     # data stuff
-    datadir = "/mnt/e/datasets/stable_diffusion_image_prompts"
+    datadir = "data"
     train_datafiles = [
         "part-000001.json",
         "part-000002.json",

@@ -1,5 +1,4 @@
-salesforce-lavis
-sentence-transformers
+alive_progress
 torch
 torchvision
 tqdm
