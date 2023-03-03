@@ -36,16 +36,16 @@ if __name__ == "__main__":
         losses = []
         model.train()
         for image, prompt_raw in tqdm(train_dataloader, ncols=60):
+            optimizer.zero_grad()
             image = image.to(device)
             loss = model(image, prompt_raw)
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             losses.append(loss.item())
         train_loss = np.nanmean(losses)
 
         model.eval()
-        with torch.no_grad(), open(f"check/epoch_{epoch}.txt", "w") as f:
+        with torch.no_grad(), open(f"predictions/epoch_{epoch}.txt", "w") as f:
             losses = []
             for image, prompt_raw in tqdm(val_dataloader, ncols=60):
                 image = image.to(device)
@@ -84,3 +84,4 @@ if __name__ == "__main__":
         print(
             f"train: {round(train_loss, 4)}\nval: {round(val_loss, 4)}\ntest: {round(test_loss, 4)}"
         )
+        torch.save(model.state_dict(), f"checkpoints/epoch_{epoch}.pth")

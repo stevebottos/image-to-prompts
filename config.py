@@ -1,18 +1,11 @@
+import os 
+import glob 
 class Config:
     # data stuff
     datadir = "data"
-    train_datafiles = [
-        "part-000001.json",
-        "part-000002.json",
-        "part-000003.json",
-        "part-000004.json",
-        "part-000005.json",
-        "part-000006.json",
-        "part-000007.json",
-        "part-000008.json",
-        "part-000009.json",
-    ]
-    val_datafiles = ["part-000010.json"]
+    all_datafiles = [os.path.basename(df) for df in glob.glob(f"{datadir}/*.json") if "test" not in df]
+    train_datafiles = all_datafiles[:-1]
+    val_datafiles = [all_datafiles[-1]]
     test_datafiles = ["test.json"]
 
     # model stuff

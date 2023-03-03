@@ -1,4 +1,7 @@
 alive_progress
+fairscale
+salesforce-lavis
 torch
 torchvision
 tqdm
+timm

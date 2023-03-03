@@ -72,6 +72,7 @@ def get_datasets(
     val_limit=None,
     test_limit=None,
 ):
+    n_workers = 2
     train_dataset = ImagePromptDataset(
         datadir=Config.datadir,
         datafiles=train_files,
@@ -86,20 +87,6 @@ def get_datasets(
         limit=val_limit,
     )
 
-    train_dataloader = DataLoader(
-        train_dataset,
-        batch_size=2,
-        shuffle=True,
-        num_workers=4,
-    )
-
-    val_dataloader = DataLoader(
-        val_dataset,
-        batch_size=2,
-        shuffle=False,
-        num_workers=4,
-    )
-
     test_dataset = ImagePromptDataset(
         datadir=Config.datadir,
         datafiles=test_files,
@@ -107,11 +94,25 @@ def get_datasets(
         limit=test_limit,
     )
 
+    train_dataloader = DataLoader(
+        train_dataset,
+        batch_size=8,
+        shuffle=True,
+        num_workers=n_workers,
+    )
+
+    val_dataloader = DataLoader(
+        val_dataset,
+        batch_size=2,
+        shuffle=False,
+        num_workers=n_workers,
+    )
+
     test_dataloader = DataLoader(
         test_dataset,
         batch_size=2,
         shuffle=False,
-        num_workers=4,
+        num_workers=n_workers,
     )
 
     return train_dataloader, val_dataloader, test_dataloader
