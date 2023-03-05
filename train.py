@@ -25,6 +25,12 @@ if __name__ == "__main__":
         prompt="",
         max_tokenizer_length=Config.max_tokenizer_length,
     ).to(device)
+    
+    # Freeze some of the vision encoder layers
+    for name, param in model.visual_encoder.named_parameters():
+        if "blocks.11" in name:
+            break
+        param.requires_grad = False
 
     optimizer = torch.optim.AdamW(
         params=model.parameters(),
@@ -32,15 +38,22 @@ if __name__ == "__main__":
         weight_decay=0.05,
     )
 
+    scaler = torch.cuda.amp.GradScaler()
+
     for epoch in range(50):
         losses = []
         model.train()
         for image, prompt_raw in tqdm(train_dataloader, ncols=60):
             optimizer.zero_grad()
-            image = image.to(device)
-            loss = model(image, prompt_raw)
-            loss.backward()
-            optimizer.step()
+
+            with torch.autocast(device_type='cuda', dtype=torch.float16):
+                image = image.to(device)
+                loss = model(image, prompt_raw)
+
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+
             losses.append(loss.item())
         train_loss = np.nanmean(losses)
 
